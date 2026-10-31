@@ -43,3 +43,9 @@ Local LLM-powered automated Web security architecture audit and OWASP compliance
   針對具備臨時動態路徑之沙盒目標（如 Google Gruyere 的 `/5587.../` 路徑），爬蟲容易因相對路徑解析偏移跳出目標範圍，誤爬全站靜態說明頁。
 - **修復策略**：
   實作 Base URL 動態綁定機制，嚴格校驗每次跳轉與請求之 URL 前綴，限制探測動作僅在授權之動態實例邊界內執行，保證資料採集精確度。
+
+  ### 4. Windows 子行程之 Python 解釋器路徑解析失效
+- **問題現象**：
+  Agent 在透過 Shell 子行程執行探測腳本（`crawler.py`）時，系統報錯 `command not found: python` 或無法識別預設指令，導致探測管線於初始化階段直接中斷。
+- **修復策略**：
+  放棄依賴系統全域環境變數（PATH）之短指令，改採 Python 內建模組 `sys.executable` 動態定位當前運行環境之絕對路徑，確保跨虛擬環境與本機終端時均能精準調用 Python 解釋器。
